@@ -11,13 +11,15 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.config({
-    extends: ['next'],
+    extends: ["next", "plugin:@typescript-eslint/recommended"],
+    plugins: ["@typescript-eslint"],
+    parser: "@typescript-eslint/parser",
     rules: {
-      'react/no-unescaped-entities': 'off',
-      '@next/next/no-page-custom-font': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-page-custom-font": "off",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   }),
-]
+];
 
 export default eslintConfig;

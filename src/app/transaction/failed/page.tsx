@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function TransactionFailedPage() {
+function TransactionFailedContent() {
     const searchParams = useSearchParams();
     const userId = searchParams.get("userId");
 
@@ -25,5 +26,13 @@ export default function TransactionFailedPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function TransactionFailedPage() {
+    return (
+        <Suspense fallback={<div className="text-white">Loading...</div>}>
+            <TransactionFailedContent />
+        </Suspense>
     );
 }

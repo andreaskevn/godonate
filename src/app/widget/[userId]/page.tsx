@@ -108,7 +108,7 @@ export default function DonateWidget({
         socketRef.current.close(1000);
       }
     };
-  }, [userId]);
+  }, [userId, soundEnabled]);
 
   return (
     <div className="min-h-screen bg-transparent flex flex-col items-center justify-start p-4 text-white">

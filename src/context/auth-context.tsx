@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 type AuthContextType = {
     token: string | null;
@@ -18,6 +18,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isLoadingAuth, setIsLoadingAuth] = useState(true);
     const [userId, setUserId] = useState<string | null>(null);
 
+    // helper utk set token + userId
+    const handleSetToken = useCallback((jwt: string) => {
+        setToken(jwt);
+        const decodedId = decodeUserId(jwt);
+        setUserId(decodedId);
+        localStorage.setItem("token", jwt);
+    }, []);
+
     useEffect(() => {
         // ⏳ load token dari localStorage sekali saat awal
         const savedToken = localStorage.getItem("token");
@@ -25,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             handleSetToken(savedToken);
         }
         setIsLoadingAuth(false);
-    }, []);
+    }, [handleSetToken]);
 
     const decodeUserId = (jwt: string): string | null => {
         try {
@@ -39,13 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    // helper utk set token + userId
-    const handleSetToken = (jwt: string) => {
-        setToken(jwt);
-        const decodedId = decodeUserId(jwt);
-        setUserId(decodedId);
-        localStorage.setItem("token", jwt);
-    };
+
 
     // ✅ login function bisa di-await
     const login = async (jwt: string) => {

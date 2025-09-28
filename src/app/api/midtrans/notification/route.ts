@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import midtransClient from "midtrans-client";
-import prisma from "@/lib/prisma";
+import prisma from "../../../../lib/prisma";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

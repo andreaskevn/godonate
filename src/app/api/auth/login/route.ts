@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import * as bcrypt from "bcryptjs";
 import jwt, { SignOptions } from "jsonwebtoken";
-import prisma from "@/lib/prisma";
+import prisma from "../../../../lib/prisma";
 import type {
   LoginApiResponse,
   UserSafeData,

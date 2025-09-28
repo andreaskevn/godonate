@@ -70,9 +70,9 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  context: { params: { userId: string } }
+  {params}: { params: { userId: string } }
 ) {
-  const { userId } = context.params;
+  const { userId } = params;
 
   try {
     const donations = await prisma.donation.findMany({

@@ -4,9 +4,9 @@ import midtransClient from "midtrans-client";
 
 export async function POST(
   request: NextRequest,
-  context: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
-  const { userId } = context.params;
+  const userId = (await params).userId;
 
   if (!userId) {
     return NextResponse.json(

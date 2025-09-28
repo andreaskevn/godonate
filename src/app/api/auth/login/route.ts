@@ -42,7 +42,7 @@ export async function POST(
     }
 
     const jwtSecret = process.env.JWT_SECRET;
-    const jwtExpiresIn = process.env.JWT_EXPIRES_IN;
+    const _jwtExpiresIn = process.env.JWT_EXPIRES_IN;
 
     if (!jwtSecret) {
       console.error("JWT_SECRET tidak ditemukan di environment variables.");

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -12,4 +6,44 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum DonationStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id         String     @id @default(cuid())
+  email      String     @unique
+  username   String     @unique
+  password   String     
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  donations  Donation[] 
+}
+
+model Donation {
+  id                    String         @id @default(cuid())
+  message               String?        // pesan dari pendonor (boleh kosong)
+  donorEmail            String?        // email pendonor jika diisi (boleh anonymous)
+  donorName             String?        // nama pendonor (opsional)
+  amount                Decimal        // gunakan Prisma Decimal untuk angka uang
+  status                DonationStatus @default(PENDING)
+  midtransTransactionId String?        
+  midtransPayload       Json?          // simpan payload notifikasi Midtrans bila perlu
+  paidAt                DateTime?      // timestamp saat status PAID
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  // relation to streamer (user)
+  userId  String
+  user    User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  // @@index([midtransTransactionId])
+  @@unique([midtransTransactionId])
 }

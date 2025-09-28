@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../../lib/prisma";
+import prisma from "@/lib/prisma";
 import midtransClient from "midtrans-client";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: { userId: string } }
 ) {
-  const userId = (await params).userId;
+  const { userId } = params;
 
   if (!userId) {
     return NextResponse.json(
@@ -68,30 +68,11 @@ export async function POST(
   }
 }
 
-// export async function GET(
-//   request: NextRequest,
-//   { params }: { params: Promise<{ userId: string }> }
-// ) {
-//   const userId = (await params).userId;
-
-//   try {
-//     const donations = await prisma.donation.findMany({
-//       where: { userId },
-//     });
-
-//     return NextResponse.json(donations);
-//   } catch (error: any) {
-//     return NextResponse.json({ error: error.message }, { status: 500 });
-//   }
-// }
-
 export async function GET(
   request: NextRequest,
-  context: { params: { userId: string } } | { params: Promise<{ userId: string }> }
+  { params }: { params: { userId: string } }
 ) {
-  // handle kalau params masih Promise
-  const rawParams = "then" in context.params ? await context.params : context.params;
-  const { userId } = rawParams;
+  const { userId } = params;
 
   try {
     const donations = await prisma.donation.findMany({
@@ -103,4 +84,3 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
-

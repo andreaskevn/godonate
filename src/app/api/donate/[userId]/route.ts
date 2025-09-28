@@ -70,9 +70,9 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  {params}: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
-  const { userId } = params;
+  const userId = (await params).userId;
 
   try {
     const donations = await prisma.donation.findMany({

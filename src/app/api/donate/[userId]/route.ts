@@ -4,9 +4,9 @@ import midtransClient from "midtrans-client";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: { userId: string } }
 ) {
-  const { userId } = params;
+  const { userId } = context.params;
 
   if (!userId) {
     return NextResponse.json(
@@ -70,9 +70,9 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: { userId: string } }
 ) {
-  const { userId } = params;
+  const { userId } = context.params;
 
   try {
     const donations = await prisma.donation.findMany({

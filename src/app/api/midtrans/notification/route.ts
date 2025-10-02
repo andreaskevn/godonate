@@ -5,11 +5,6 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    console.log(
-      "Received raw notification body:",
-      JSON.stringify(body, null, 2)
-    );
-
     const core = new midtransClient.CoreApi({
       isProduction: false,
       serverKey: process.env.MIDTRANS_SERVER_KEY!,
@@ -21,8 +16,6 @@ export async function POST(req: NextRequest) {
     const orderId = statusResponse.order_id as string;
     const transactionStatus = statusResponse.transaction_status as string;
     const fraudStatus = statusResponse.fraud_status as string;
-
-    console.log("🔔 Midtrans notif verified:", statusResponse);
 
     const donation = await prisma.donation.findUnique({
       where: { midtransTransactionId: orderId },
@@ -63,20 +56,13 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log(
-      `✅ Successfully updated donation ${donation.id} to ${newStatus}`
-    );
-    console.log("newStatus", newStatus);
-
     if (newStatus === "PAID") {
       try {
-        console.log("🚀 Triggering WebSocket broadcast...");
-        await fetch("http://localhost:3000/api/broadcast", {
+        await fetch("https://godonate-three.vercel.app/api/broadcast", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedDonation),
         });
-        console.log("✅ Broadcast signal sent successfully.");
       } catch (broadcastError) {
         console.error("Failed to trigger broadcast:", broadcastError);
       }

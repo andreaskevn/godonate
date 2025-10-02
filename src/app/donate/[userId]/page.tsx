@@ -3,6 +3,10 @@
 import { useState, useEffect, use } from "react";
 import Script from "next/script";
 import { motion } from "framer-motion";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface Streamer {
   id: string;
@@ -25,17 +29,13 @@ export default function DonatePage({ params }: { params: Promise<{ userId: strin
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch(`/api/user/${userId}`, { method: 'GET' });
+      const res = await fetch(`/api/user/${userId}`, { method: "GET" });
       const data = await res.json();
-      console.log('Midtrans Token:', data);
       setStreamerData(data);
       return data;
     };
 
-    const result = fetchData()
-      .catch(console.error);
-
-    console.log(result);
+    fetchData().catch(console.error);
   }, [userId]);
 
   const handleChange = (
@@ -44,10 +44,13 @@ export default function DonatePage({ params }: { params: Promise<{ userId: strin
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const setAmount = (value: number) => {
+    setForm({ ...form, amount: value.toString() });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
 
     try {
       const res = await fetch(`/api/donate/${userId}`, {
@@ -60,25 +63,20 @@ export default function DonatePage({ params }: { params: Promise<{ userId: strin
 
       if (data.transactionToken) {
         window.snap.pay(data.transactionToken, {
-          onSuccess: function (result: any) {
-            console.log("success", result);
+          onSuccess: () => {
             window.location.href = `/transaction/success?userId=${userId}`;
           },
-          onPending: function (result: any) {
-            console.log("pending", result);
+          onPending: () => {
             window.location.href = `/transaction/success?userId=${userId}`;
           },
-          onError: function (result: any) {
-            console.error("error", result);
+          onError: () => {
             window.location.href = `/transaction/failed?userId=${userId}`;
           },
-          onClose: function () {
-            console.log("customer closed popup");
+          onClose: () => {
             window.location.href = `/transaction/failed?userId=${userId}`;
           },
         });
       }
-
     } catch (err) {
       console.error("Error submit:", err);
     } finally {
@@ -103,54 +101,74 @@ export default function DonatePage({ params }: { params: Promise<{ userId: strin
         {steamerData ? `Donasi untuk ${steamerData.username}` : "Memuat..."}
       </motion.h1>
 
-      <motion.form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-neutral-900/80 backdrop-blur-sm rounded-xl shadow-lg p-6 flex flex-col gap-5 border border-neutral-700"
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
+        className="w-full max-w-lg"
       >
-        <input
-          name="donorName"
-          placeholder="Nama Anda"
-          value={form.donorName}
-          onChange={handleChange}
-          className="bg-neutral-800 text-white placeholder-gray-400 border border-neutral-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none"
-        />
-        <input
-          name="donorEmail"
-          type="email"
-          placeholder="Email Anda"
-          value={form.donorEmail}
-          onChange={handleChange}
-          className="bg-neutral-800 text-white placeholder-gray-400 border border-neutral-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none"
-        />
-        <input
-          name="amount"
-          type="number"
-          placeholder="Jumlah Donasi (Rp)"
-          value={form.amount}
-          onChange={handleChange}
-          className="bg-neutral-800 text-white placeholder-gray-400 border border-neutral-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none"
-        />
-        <textarea
-          name="message"
-          placeholder="Pesan untuk streamer"
-          value={form.message}
-          onChange={handleChange}
-          className="bg-neutral-800 text-white placeholder-gray-400 border border-neutral-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none resize-none"
-          rows={4}
-        />
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          type="submit"
-          disabled={loading}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg py-3 transition-all shadow-md"
-        >
-          {loading ? "Memproses..." : "Donasi Sekarang"}
-        </motion.button>
-      </motion.form>
+        <Card className="bg-neutral-900/80 border-neutral-700 text-white">
+          <CardHeader>
+            <CardTitle className="text-lg text-center">Form Donasi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <Input
+                name="donorName"
+                placeholder="Nama Anda"
+                value={form.donorName}
+                onChange={handleChange}
+                className="h-12 text-base bg-neutral-800 border-neutral-700 text-white placeholder-gray-400"
+              />
+              <Input
+                name="donorEmail"
+                type="email"
+                placeholder="Email Anda"
+                value={form.donorEmail}
+                onChange={handleChange}
+                className="h-12 text-base bg-neutral-800 border-neutral-700 text-white placeholder-gray-400"
+              />
+              <div>
+                <Input
+                  name="amount"
+                  type="number"
+                  placeholder="Jumlah Donasi (Rp)"
+                  value={form.amount}
+                  onChange={handleChange}
+                  className="h-12 text-base bg-neutral-800 border-neutral-700 text-white placeholder-gray-400"
+                />
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {[10000, 20000, 50000, 100000].map((val) => (
+                    <Button
+                      key={val}
+                      type="button"
+                      onClick={() => setAmount(val)}
+                      className="bg-neutral-800 hover:bg-emerald-600 border border-neutral-700 text-white text-sm px-4 py-2"
+                    >
+                      Rp{val.toLocaleString()}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <Textarea
+                name="message"
+                placeholder="Pesan untuk streamer"
+                value={form.message}
+                onChange={handleChange}
+                rows={4}
+                className="text-base bg-neutral-800 border-neutral-700 text-white placeholder-gray-400 resize-none"
+              />
+              <Button
+                type="submit"
+                disabled={loading}
+                className="h-12 text-base bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-all shadow-md"
+              >
+                {loading ? "Memproses..." : "Donasi Sekarang"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }

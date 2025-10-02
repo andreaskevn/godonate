@@ -66,11 +66,9 @@ export async function POST(
 
     const token = jwt.sign(payload, jwtSecret, signOptions);
 
-    console.log("Token:", token);
 
     const { password: _password, ...userWithoutPassword } = user;
 
-    console.log("typeofWindow:", typeof window);
     if (typeof window !== "undefined") {
       localStorage.setItem("token", JSON.stringify(token));
     }

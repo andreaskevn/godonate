@@ -29,7 +29,6 @@ export default function DonateWidget({
         audioRef.current!.pause();
         audioRef.current!.currentTime = 0;
         setSoundEnabled(true);
-        console.log("🔊 Sound enabled");
       }).catch(err => console.error("Enable sound failed:", err));
     }
   };
@@ -46,7 +45,6 @@ export default function DonateWidget({
       socketRef.current = socket;
 
       socket.onopen = () => {
-        console.log("✅ WebSocket connected.");
         reconnectAttempt.current = 0;
       };
 
@@ -57,11 +55,8 @@ export default function DonateWidget({
       socket.onmessage = (event) => {
         try {
           const data: Donation = JSON.parse(event.data);
-          console.log("📩 New donation received:", data);
-          console.log(`Checking filter: data.userId (${data.userId}) === widget.userId (${userId})`);
 
           if (data.userId === userId) {
-            console.log("✅ Match found! Adding donation to state.");
             setDonations((prev) => [data, ...prev]);
 
             if (audioRef.current) {
@@ -79,7 +74,6 @@ export default function DonateWidget({
               setDonations((prev) => prev.filter((d) => d.id !== data.id));
             }, 5000);
           } else {
-            console.log("❌ No match. Ignoring donation for this widget.");
           }
         } catch (err) {
           console.error("WS message error:", err);
@@ -87,11 +81,9 @@ export default function DonateWidget({
       };
 
       socket.onclose = (event) => {
-        console.log(`❌ WebSocket closed: code=${event.code}`);
         if (event.code === 1006) {
           reconnectAttempt.current++;
           const delay = Math.min(1000 * Math.pow(2, reconnectAttempt.current), 10000);
-          console.log(`Abnormal closure. Reconnecting in ${delay / 1000}s...`);
           setTimeout(() => {
             connect();
           }, delay);
@@ -103,7 +95,6 @@ export default function DonateWidget({
 
     return () => {
       if (socketRef.current) {
-        console.log("Cleanup: Closing WebSocket intentionally.");
         socketRef.current.onclose = null;
         socketRef.current.close(1000);
       }

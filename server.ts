@@ -19,7 +19,6 @@ function broadcastDonation(donation: any) {
       client.send(payload);
     }
   });
-  console.log("📢 Broadcasted donation:", donation);
 }
 
 app.prepare().then(() => {
@@ -29,12 +28,7 @@ app.prepare().then(() => {
         const parsedUrl = parse(req.url!, true);
         const { pathname } = parsedUrl;
 
-        console.log(
-          `[Custom Server] Request received: ${req.method} ${pathname}`
-        );
-
         if (pathname === "/api/broadcast" && req.method === "POST") {
-          console.log("[Custom Server] Handling /api/broadcast...");
           let body = "";
           req.on("data", (chunk) => {
             body += chunk.toString();
@@ -65,11 +59,9 @@ app.prepare().then(() => {
   const wss = new WebSocketServer({ noServer: true });
 
   wss.on("connection", (ws: WebSocket) => {
-    console.log("🔌 WS connected for donations");
     clients.push(ws);
 
     ws.on("close", () => {
-      console.log("🔌 WS disconnected for donations");
       clients = clients.filter((c) => c !== ws);
     });
   });
@@ -88,6 +80,5 @@ app.prepare().then(() => {
   });
 
   server.listen(port, () => {
-    console.log(`🚀 Next.js + WS ready on http://${hostname}:${port}`);
   });
 });

@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     if (newStatus === "PAID") {
       try {
-        await fetch("https://godonate-three.vercel.app/api/broadcast", {
+        await fetch("https://ws-server-godonate-production.up.railway.app/api/broadcast", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedDonation),

@@ -10,7 +10,6 @@ const images = [
   "/stream-hero/streamer3.jpg",
   "/stream-hero/streamer4.jpg",
   "/stream-hero/streamer5.jpg",
-  "/stream-hero/streamer6.jpg",
 ];
 
 export default function HomePage() {

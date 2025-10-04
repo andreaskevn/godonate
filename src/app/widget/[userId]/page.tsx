@@ -41,7 +41,7 @@ export default function DonateWidget({
     if (!userId) return;
 
     const connect = () => {
-      const socket = new WebSocket(`ws://localhost:3000/ws/donations`);
+      const socket = new WebSocket(`wss://ws-server-godonate-production.up.railway.app/ws/donations`);
       socketRef.current = socket;
 
       socket.onopen = () => {
@@ -103,10 +103,6 @@ export default function DonateWidget({
 
   return (
     <div className="min-h-screen bg-transparent flex flex-col items-center justify-start p-4 text-white">
-      <h1 className="text-xl font-bold mb-4">
-        Donasi Terbaru untuk {userId}
-      </h1>
-
       <div className="flex flex-col gap-3 w-full max-w-md">
         {donations.map((d) => (
           <div

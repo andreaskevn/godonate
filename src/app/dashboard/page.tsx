@@ -48,7 +48,7 @@ export default function DashboardPage() {
 
     const handleCopy = async () => {
         if (!userId) return;
-        const link = `https://godonate-three.vercel.app/donate/${userId}`;
+        const link = `https://godonate-alpha.vercel.app/donate/${userId}`;
         await navigator.clipboard.writeText(link);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -72,7 +72,7 @@ export default function DashboardPage() {
                     <p className="text-gray-300">Link Donasi Kamu:</p>
                     <div className="flex gap-2 mt-2 text-black">
                         <a
-                            href={`https://godonate-three.vercel.app/donate/${userId}`}
+                            href={`https://godonate-alpha.vercel.app/donate/${userId}`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -136,8 +136,8 @@ export default function DashboardPage() {
                                             <strong>Status:</strong>{" "}
                                             <span
                                                 className={`${d.status === "success"
-                                                        ? "text-green-400"
-                                                        : "text-yellow-400"
+                                                    ? "text-green-400"
+                                                    : "text-yellow-400"
                                                     }`}
                                             >
                                                 {d.status}

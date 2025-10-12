@@ -11,7 +11,6 @@ const handle = app.getRequestHandler();
 
 let clients: WebSocket[] = [];
 
-// Helper untuk broadcast donasi baru
 function broadcastDonation(donation: any) {
   const payload = JSON.stringify(donation);
   clients.forEach((client) => {

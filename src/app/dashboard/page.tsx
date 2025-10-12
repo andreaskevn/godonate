@@ -46,9 +46,10 @@ export default function DashboardPage() {
         }
     };
 
+    const copyLink = process.env.HANDLE_COPY
     const handleCopy = async () => {
         if (!userId) return;
-        const link = `https://godonate-alpha.vercel.app/donate/${userId}`;
+        const link = `${copyLink}/${userId}`;
         await navigator.clipboard.writeText(link);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -58,7 +59,6 @@ export default function DashboardPage() {
 
     return (
         <div className="min-h-screen bg-black p-8 text-white">
-            {/* Header */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold">Dashboard</h1>
                 <Button variant="destructive" onClick={logout}>
@@ -66,13 +66,12 @@ export default function DashboardPage() {
                 </Button>
             </div>
 
-            {/* Link Donasi */}
             {userId && (
                 <div className="mb-6">
                     <p className="text-gray-300">Link Donasi Kamu:</p>
                     <div className="flex gap-2 mt-2 text-black">
                         <a
-                            href={`https://godonate-alpha.vercel.app/donate/${userId}`}
+                            href={`${copyLink}/${userId}`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >

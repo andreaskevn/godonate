@@ -56,9 +56,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const paidBroadcast = process.env.PAID_BROADCAST;
+
     if (newStatus === "PAID") {
       try {
-        await fetch("https://ws-server-godonate-production.up.railway.app/api/broadcast", {
+        await fetch(`${paidBroadcast}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedDonation),

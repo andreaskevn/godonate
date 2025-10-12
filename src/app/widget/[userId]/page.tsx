@@ -22,6 +22,7 @@ export default function DonateWidget({
   const reconnectAttempt = useRef(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const webSocketRailway = process.env.WEB_SOCKET_RAILWAY;
 
   const enableSound = () => {
     if (audioRef.current) {
@@ -40,8 +41,9 @@ export default function DonateWidget({
   useEffect(() => {
     if (!userId) return;
 
+
     const connect = () => {
-      const socket = new WebSocket(`wss://ws-server-godonate-production.up.railway.app/ws/donations`);
+      const socket = new WebSocket(`${webSocketRailway}`);
       socketRef.current = socket;
 
       socket.onopen = () => {
@@ -99,8 +101,7 @@ export default function DonateWidget({
         socketRef.current.close(1000);
       }
     };
-  }, [userId, soundEnabled]);
-
+  }, [userId, soundEnabled, webSocketRailway]);
   return (
     <div className="min-h-screen bg-transparent flex flex-col items-center justify-start p-4 text-white">
       <div className="flex flex-col gap-3 w-full max-w-md">
